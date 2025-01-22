@@ -1,3 +1,13 @@
+#
+# Pythin script to refine a test case from a JIRA User Storyt using OpenAI's models.
+# Creates the source BDD file for Agentic AI Framework
+# Creates Zephyr Import files for JIRA Test Case issue Types
+#
+# Author: 	C. Finnegan
+# Date:		January 2024
+#
+
+
 #!/usr/bin/env python3
 import os
 from dotenv import load_dotenv
