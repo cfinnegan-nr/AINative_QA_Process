@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
 import os
+from dotenv import load_dotenv
+
 
 # Set up your OpenAI API key
-os.environ["OPENAI_API_KEY"] = "mykey"
-os.environ["OPENAI_API_BASE"] = "https://genai-gateway.azure-api.net/"
-os.environ["JIRA_USER_NAME"] = "myjiraemail"
-os.environ["JIRA_API_TOKEN"] = "myjiratoken"
+#os.environ["OPENAI_API_KEY"] = "mykey"
+#os.environ["OPENAI_API_BASE"] = "https://genai-gateway.azure-api.net/"
+#os.environ["JIRA_USER_NAME"] = "myjiraemail"
+#os.environ["JIRA_API_TOKEN"] = "myjiratoken"
+
+# Specify the path to the .env file
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path=env_path)
+
+# Access the environment variables
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
+JIRA_USER_NAME = os.getenv("JIRA_USER_NAME")
+JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
+
+# Your code can now use these variables
+print(OPENAI_API_KEY)
+print(OPENAI_API_BASE)
+print(JIRA_USER_NAME)
+print(JIRA_API_TOKEN)
+
 
 from jiraextraction import retrieve_jira_ticket_from_server, create_jira_comments_in_chunks
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
