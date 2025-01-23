@@ -65,10 +65,6 @@ def add_label_to_jira_ticket(jira_ticket, label, timeout=10):
     """
     Add a label to a JIRA ticket using the JIRA REST API.
     """
-
-    print("\nAdding label to ticket:...")
-
-
     url = f"{JIRA_BASE_URL}/rest/api/2/issue/{jira_ticket}"
     auth = HTTPBasicAuth(JIRA_USER_NAME, JIRA_API_TOKEN)
     headers = {
@@ -77,6 +73,7 @@ def add_label_to_jira_ticket(jira_ticket, label, timeout=10):
     
     # Get current labels first to avoid duplicates
     current_ticket = retrieve_jira_ticket_from_server(jira_ticket)
+    print("\nAdding Label to JIRA ticket...")
     if current_ticket and 'fields' in current_ticket and 'labels' in current_ticket['fields']:
         current_labels = current_ticket['fields']['labels']
         if label not in current_labels:

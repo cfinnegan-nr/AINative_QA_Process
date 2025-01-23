@@ -121,11 +121,13 @@ def bdd_refine(jira_ticket):
         }
     
     # Create chains for each expertise
+    print("\nCreating chains for each expertise...")
     refine_chain = prompt | llm | StrOutputParser()
     estimation_chain = estimationPrompt | llmlowtemp | StrOutputParser()
     gherkin_chain = gherkinPrompt | llmlowtemp |  StrOutputParser()
     
     # Invoke each chain sequentially
+    print("\nInvoking and processing each chain sequentially...")
     final_response = refine_chain.invoke({"summary":story["summary"], "description": story["description"]})
     estimate_response = estimation_chain.invoke({"summary": story["summary"], "refined_story": final_response})
     gherkin_response = gherkin_chain.invoke({"refined_story": final_response})
