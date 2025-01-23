@@ -13,31 +13,27 @@ import os
 from dotenv import load_dotenv
 
 
-# Set up your OpenAI API key
-#os.environ["OPENAI_API_KEY"] = "mykey"
-#os.environ["OPENAI_API_BASE"] = "https://genai-gateway.azure-api.net/"
-#os.environ["JIRA_USER_NAME"] = "myjiraemail"
-#os.environ["JIRA_API_TOKEN"] = "myjiratoken"
+
 
 # Specify the path to the .env file
-#env_path = os.path.join(os.path.dirname(__file__), '.env')
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'AINative_Env', '.env')
 load_dotenv(dotenv_path=env_path)
 
 # Access the environment variables
+# Set up your OpenAI API and JIRA keys
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 JIRA_USER_NAME = os.getenv("JIRA_USER_NAME")
 JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
 
 # Your code can now use these variables
-print(OPENAI_API_KEY)
-print(OPENAI_API_BASE)
-print(JIRA_USER_NAME)
-print(JIRA_API_TOKEN)
+# print(OPENAI_API_KEY)
+# print(OPENAI_API_BASE)
+# print(JIRA_USER_NAME)
+# print(JIRA_API_TOKEN)
 
 
-from jiraextraction import retrieve_jira_ticket_from_server, create_jira_comments_in_chunks
+from jiraextraction import retrieve_jira_ticket_from_server, create_jira_comments_in_chunks, add_label_to_jira_ticket
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
@@ -51,17 +47,38 @@ llmlowtemp = ChatOpenAI(temperature=0.1, model="claude-3-5-sonnet-v2")
 prompt = PromptTemplate.from_template("""
 You are an expert on behaviour driven development (BDD) and agile refinement of stories for software development. Your task is to review and refine the following user story to ensure it is well-defined and ready for development.
 
+Key Guidelines:
+1. You can revise existing content in the story, but DO NOT invent or assume requirements that aren't explicitly stated
+2. If details are missing, add them to Outstanding Questions rather than making assumptions
+3. Only provide acceptance criteria and examples for clearly stated requirements
+4. Flag ambiguity and missing information rather than filling in gaps
+
+INVEST Analysis (analyze only what's provided, flag missing aspects):
+- Independent: Can this story be delivered independently? Flag dependencies.
+- Negotiable: Is there room for discussion, or is it too prescriptive?
+- Valuable: Is the business value clearly stated?
+- Estimable: Is there enough detail to estimate? Please create a single sentence indicating the T-shirt size estimate if possible, otherwise flag what's missing.
+- Small: Can it be completed in one sprint?
+- Testable: Are the requirements clear enough to test?
+
 Please consider the following aspects from the perspectives of a software developer, product owner, and QA engineer:
 1. Clarity: Ensure the story is clear and concise.
 2. Completeness: Make sure all necessary details are included.
-3. Acceptance Criteria: Define clear acceptance criteria that match the story's requirements. 
-4. Attempt to meet the agile INVEST guidelines but not critical if not possible. 
-5. Example Mapping: Use example mapping to clarify requirements from the viewpoint of software developers, product owners, and QA engineers. 
-Rules and acceptance criteria must align. Do not duplicate questions. All output of example mapping should have updated the Acceptance Criteria and Technical Requirements and Outstanding Questions.
+3. Acceptance Criteria: Define clear acceptance criteria that match the story's requirements
+4. Example Mapping: Only if sufficient acceptance criteria exist in the story, use example mapping to clarify requirements further from the viewpoint of software developers, product owners, and QA engineers. 
+Rules and acceptance criteria must align.
 
-Structure story in the following order Summary, Description and/or Business value, Acceptance criteria, Technical Requirements, Example Mapping Session, Outstanding Questions and finally any other Notes
+Structure your response in this order:
+- Immediate Concerns/INVEST Analysis
+- Summary
+- Description/Business Value
+- Proposed Acceptance Criteria
+- Examples
+- Technical Requirements (only if clearly implied by the story)
+- Outstanding Questions (highlight all missing critical information)
+- Notes (optional observations)
 
-The output should be formatted for a JIRA cloud comment and its supported markdown syntax. Use JIRA panels only to highlight problems or immediate things to confirm, but do use color to highlight other important sections and titles. Render in JIRA cloud markdown the color coding in the headings: Blue for Rules, Green for Examples, Red for Questions
+The output should be formatted for a JIRA cloud comment and its supported markdown syntax. Use JIRA panels only to highlight problems or immediate things to confirm, but do use color to highlight other important sections and titles. Render in JIRA cloud markdown the color coding in the headings: Blue for Rules/Acceptance Criteria, Green for Examples, Red for Questions
 
 Do not include a definition of done.
 
@@ -84,6 +101,11 @@ Description:{refined_story}
 gherkinPrompt = PromptTemplate.from_template("""
 You are an expert on behaviour driven development (BDD) and agile refinement of user stories. Your task is to create Gherkin code based on the refined user story and example mapping.
 Ensure that the Gherkin code is clear, concise, and covers all necessary scenarios and wrapped in a jira code block.
+Rules:
+1. Each scenario must map to a specific acceptance criterion
+2. Use concrete examples, not abstract ones
+3. Focus on business outcomes, not technical implementation
+4. Only return the gherkin code, DO NOT provide any additional information
 Ensure the output is formatted for a JIRA cloud comment wrapped and adhere to its supported markdown syntax.
 Here is the refined user story and example mapping:
 Example mapping:{refined_story}
@@ -108,13 +130,14 @@ def bdd_refine(jira_ticket):
     estimate_response = estimation_chain.invoke({"summary": story["summary"], "refined_story": final_response})
     gherkin_response = gherkin_chain.invoke({"refined_story": final_response})
     
-    print("\nFinal Refined Story:")
+    print("\nFinal Refined Story generated:...")
     
     # Create a comment on the JIRA ticket with the refined story
     comment = f"h1. AI Refinement\n{estimate_response}\n\n{final_response}\n\n{gherkin_response}"
-    print(comment)
+    # print(comment)
     
     # Post the comment in chunks to JIRA
+    add_label_to_jira_ticket(jira_ticket, "#ai")
     create_jira_comments_in_chunks(jira_ticket, comment)
     
     return final_response

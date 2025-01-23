@@ -48,7 +48,9 @@ def retrieve_jira_ticket_from_server(jira_ticket, timeout=10):
         response = session.get(url, timeout=timeout)
         response.raise_for_status()
         try:
-            print(response.text)
+            # Comment out response print for now - C. Finnegan - Jan 24th 2025
+            # print(response.text)
+            print("\nRetrieving JIRA ticket from server...")
             return response.json()
         except ValueError as e:
             logging.error(f"Error decoding JSON response: {e}")
@@ -56,6 +58,47 @@ def retrieve_jira_ticket_from_server(jira_ticket, timeout=10):
     except requests.exceptions.RequestException as e:
         logging.error(f"Error retrieving JIRA ticket: {e} {response.text}")
         return None
+
+
+
+def add_label_to_jira_ticket(jira_ticket, label, timeout=10):
+    """
+    Add a label to a JIRA ticket using the JIRA REST API.
+    """
+
+    print("\nAdding label to ticket:...")
+
+
+    url = f"{JIRA_BASE_URL}/rest/api/2/issue/{jira_ticket}"
+    auth = HTTPBasicAuth(JIRA_USER_NAME, JIRA_API_TOKEN)
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    # Get current labels first to avoid duplicates
+    current_ticket = retrieve_jira_ticket_from_server(jira_ticket)
+    if current_ticket and 'fields' in current_ticket and 'labels' in current_ticket['fields']:
+        current_labels = current_ticket['fields']['labels']
+        if label not in current_labels:
+            current_labels.append(label)
+            payload = {
+                "update": {
+                    "labels": [{"add": label}]
+                }
+            }
+            
+            try:
+                response = requests.put(url, auth=auth, headers=headers, json=payload, timeout=timeout)
+                response.raise_for_status()
+                return True
+            except requests.exceptions.RequestException as e:
+                logging.error(f"Error adding label to JIRA ticket: {e}")
+                return False
+    
+    return True
+
+
+
 
 def create_jira_comment(jira_ticket, comment, timeout=10):
     """
@@ -77,6 +120,16 @@ def create_jira_comment(jira_ticket, comment, timeout=10):
     except requests.exceptions.RequestException as e:
         logging.error(f"Error creating JIRA comment: {e} {response.text}")
         return None
+    
+    try:
+        response = requests.post(url, auth=auth, headers=headers, json=payload, timeout=timeout)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error creating JIRA comment: {e} {response.text}")
+        return None
+
+
 
 def chunk_text(text, chunk_size=MAX_JIRA_COMMENT_LENGTH):
     """
@@ -91,3 +144,6 @@ def create_jira_comments_in_chunks(jira_ticket, comment, timeout=10):
     chunks = chunk_text(comment)
     for chunk in chunks:
         create_jira_comment(jira_ticket, chunk, timeout)
+
+
+
