@@ -1,0 +1,68 @@
+{
+    "testCases": [
+        {
+            "id": "TC-INVHUB-11696-01",
+            "summary": "Verify filtering is enabled on all columns of the transaction list",
+            "preconditions": "User is logged into the application and navigated to the transaction list page.",
+            "steps": [
+                {
+                    "step": "Navigate to the transaction list page.",
+                    "expectedResult": "Transaction list page is displayed with all columns visible."
+                },
+                {
+                    "step": "Attempt to apply a filter on each column one by one.",
+                    "expectedResult": "Filter options are available and can be applied to each column."
+                }
+            ],
+            "postconditions": "Filters are applied to the transaction list."
+        },
+        {
+            "id": "TC-INVHUB-11696-02",
+            "summary": "Verify sorting functionality works correctly with applied filters",
+            "preconditions": "User is on the transaction list page with filters applied.",
+            "steps": [
+                {
+                    "step": "Apply a filter to a column in the transaction list.",
+                    "expectedResult": "The transaction list is filtered based on the selected criteria."
+                },
+                {
+                    "step": "Sort the filtered transaction list by a different column.",
+                    "expectedResult": "The transaction list is sorted based on the selected column, considering only the filtered results."
+                }
+            ],
+            "postconditions": "Transaction list is sorted based on the filtered data."
+        },
+        {
+            "id": "TC-INVHUB-11696-03",
+            "summary": "Verify help guide is updated with filtering instructions",
+            "preconditions": "User has access to the help guide.",
+            "steps": [
+                {
+                    "step": "Open the help guide from the transaction list page.",
+                    "expectedResult": "Help guide is displayed."
+                },
+                {
+                    "step": "Search for filtering instructions in the help guide.",
+                    "expectedResult": "Help guide contains updated instructions on how to apply filters to the transaction list."
+                }
+            ],
+            "postconditions": "User understands how to apply filters using the help guide."
+        },
+        {
+            "id": "TC-INVHUB-11696-04",
+            "summary": "Verify transaction graph does not refresh based on chosen filters",
+            "preconditions": "User is on the transaction list page with filters applied.",
+            "steps": [
+                {
+                    "step": "Apply a filter to the transaction list.",
+                    "expectedResult": "The transaction list is filtered based on the selected criteria."
+                },
+                {
+                    "step": "Observe the transaction graph.",
+                    "expectedResult": "The transaction graph remains unchanged and does not refresh based on the applied filters."
+                }
+            ],
+            "postconditions": "Transaction graph remains static despite changes in the transaction list filters."
+        }
+    ]
+}
