@@ -1,7 +1,10 @@
 import pandas as pd
 import json
-from openpyxl import Workbook
+from   openpyxl import Workbook
 import logging
+
+# Import custom functions to format the JSON output from the LLM
+from dataformatting import format_json
 
 
 """
@@ -18,6 +21,38 @@ import logging
 
 
 """
+
+def build_Zephyr_Import_File(testcase_response,
+                             txt_file_name, 
+                             json_file_name, 
+                             epic_link):
+        
+        print("\nStage 3a: Build Zephyr Import file:...")
+
+        try:
+            with open(txt_file_name, 'w') as jfile:
+                # Write the string to the file
+                jfile.write(testcase_response)
+        except IOError as e:
+            # Handle file I/O errors
+            print(f"An error occurred while writing to the file: {e}")
+
+        # Format the text response from the LLM to a JSON file
+        print("\nStage 3b: Converting Test Case Response from LLM to a JSON file...")
+        format_json(txt_file_name, json_file_name)
+  
+                                               
+        # Write the successful JSON output to a file    
+        try:
+            #json_file_name = f"{jira_ticket}{sFile_TC_suffix}.json"
+            generate_excel_from_json(json_file_name, epic_link)
+            logging.info("\n Successfully Generated AI Content and Created XL for Zephyr Squad Import\n")
+        except Exception as e:
+            logging.error(f"Error generating Excel file: {e}")
+            print(f"Error generating Excel file: {e}")
+
+
+
 def generate_excel_from_json(json_file, epic_link):
     try:
         with open(json_file, 'r') as file:

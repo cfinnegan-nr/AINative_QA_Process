@@ -25,12 +25,12 @@ def filter_dict(d, whitelist):
     return result
 
 
-def retrieve_jira_ticket_from_file(jira_ticket):
-    """
-    Read the json file <jira_ticket>.json and return the contents as a sting
-    """
-    with open(f"{jira_ticket}.json") as f:
-        return json.load(f)
+# def retrieve_jira_ticket_from_file(jira_ticket):
+#     """
+#     Read the json file <jira_ticket>.json and return the contents as a sting
+#     """
+#     with open(f"{jira_ticket}.json") as f:
+#         return json.load(f)
 
     
     

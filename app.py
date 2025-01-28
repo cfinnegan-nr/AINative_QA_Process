@@ -29,17 +29,19 @@ OPENAI_API_BASE = os.getenv("OPENAI_API_BASE")
 JIRA_USER_NAME = os.getenv("JIRA_USER_NAME")
 JIRA_API_TOKEN = os.getenv("JIRA_API_TOKEN")
 
-# Your code can now use these variables
-# print(OPENAI_API_KEY)
-# print(OPENAI_API_BASE)
-# print(JIRA_USER_NAME)
-# print(JIRA_API_TOKEN)
 
+
+# --------
+# Custom Imports
+# --------
 # Import custom functions to extract JIRA requirements data
 from jiraextraction import retrieve_jira_ticket_from_server, create_jira_comments_in_chunks, add_label_to_jira_ticket
 
 # Import custom function to generate Excel file used as inout for Zephyr Squad Internal Import utilty
-from ZephyrImport import generate_excel_from_json
+from ZephyrImport import build_Zephyr_Import_File, generate_excel_from_json
+
+# Import custom functions to format the JSON output from the LLM
+from dataformatting import load_sample_json
 
 # Import LangChain modules
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
@@ -47,12 +49,18 @@ from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import StrOutputParser
 from operator import itemgetter
 
+
+
+# Import the LangChain module
 # Initialize the language model
 llm = ChatOpenAI(temperature=0.5, model="claude-3-5-sonnet-v2")
 llmlowtemp = ChatOpenAI(temperature=0.1, model="claude-3-5-sonnet-v2")
 
+
+
 # Set up file name structure for JSON files output/input of Test Cases
 sFile_TC_suffix = "_test_case_steps"
+
 
 # Create a prompt template
 prompt = PromptTemplate.from_template("""
@@ -134,63 +142,16 @@ Test Scenarios:{bdd_test_scenarios}
 Example json: {json_sample}
 """)
 
-def load_sample_json():
-    with open("Sample_Zephyr_test_case_steps.json", "r") as f:
-        return json.load(f)
-    
-def trim_json_file(input_file_path):
-    try:
-        # Read the entire content of the file
-        with open(input_file_path, 'r', encoding='utf-8') as file:
-            content = file.read()
 
-        # Find the position of the last '}' character
-        last_brace_index = content.rfind('}')
-
-        # Check if '}' was found
-        if last_brace_index == -1:
-            raise ValueError("No closing brace '}' found in the file.")
-
-        # Keep only the content up to and including the last '}'
-        trimmed_content = content[:last_brace_index + 1]
-
-        # Write the trimmed content back to the file (or to a new file if needed)
-        with open(input_file_path, 'w', encoding='utf-8') as file:
-            file.write(trimmed_content)
-
-        #print(f"\nFile {input_file_path} has been trimmed successfully.")
-
-    except Exception as e:
-        print(f"\nAn error occurred in the output LLM text file trim process: {e}")    
-    
-
-def format_json(input_file_path):
-    #print("\nformat_json function...")
-    # Define the path to your input and output files
-    #input_file_path = 'output_LLM_test_case Response.txt'
-    output_file_path = f"{jira_ticket}{sFile_TC_suffix}.json"
-
-    # Trim the text file to remove any extra content
-    trim_json_file(input_file_path)
-    
-    # Read the JSON content from the text file
-    with open(input_file_path, 'r', encoding='utf-8') as file:
-        # Load the content of the file into a dictionary
-        data = json.load(file)
-
-    # Write the loaded data to a new JSON file
-    with open(output_file_path, 'w', encoding='utf-8') as json_file:
-        # dump the dictionary to the JSON file with indentation for readability
-        json.dump(data, json_file, indent=4)
-
-    print(f"\nStage 3c: Data has been successfully converted to {output_file_path}")
 
 
 # Function to ask a question
 def bdd_refine(jira_ticket, epic_link):
 
+    # Set up common file name structure for JSON files output/input of Test Cases
     global sFile_TC_suffix
 
+    # Retrieve the JIRA ticket data
     ticket_data = retrieve_jira_ticket_from_server(jira_ticket)
     if ticket_data:
         story = {
@@ -215,57 +176,36 @@ def bdd_refine(jira_ticket, epic_link):
     
     print("\nStage 1c: Final Refined Story generated:...")
     
-    # Create a comment on the JIRA ticket with the refined story
-    #comment = f"h1. AI Refinement\n{estimate_response}\n\n{final_response}\n\n{gherkin_response}"
+    # Create a comment on the JIRA ticket with the refined BDD data (Gherkin format)
     comment = f"h1. AI Refinement Gherkin:\n{gherkin_response}"
-    #print("\ncomment...")
-    #print(comment)
     
+
     print("\nStage 2a: Updating JIRA ticket with BDD content...")
     # Post the comment in chunks to JIRA
     add_label_to_jira_ticket(jira_ticket, "#ai")
     create_jira_comments_in_chunks(jira_ticket, comment)
 
 
-    print("\nStage 3a: Build Zephyr Import file:...")
-    #print("\nTest Case Response returned from LLM...")
-    #print(type(testcase_response))
-    #print(testcase_response)
-
-    # Writing Test Case Response from LLM to a text file
-    #print("\nWriting Test Case Response from LLM to a text file...")
-    txt_file_name = f"{jira_ticket}{sFile_TC_suffix}.txt"
-    with open(txt_file_name, 'w') as jfile:
-        # Write the string to the file
-        jfile.write(testcase_response)
-
-    # Format the text response from the LLM to a JSON file
-    print("\nStage 3b: Converting Test Case Response from LLM to a JSON file...")
-    format_json(txt_file_name)
-    # tc_Response = parseLLM_TCResponse(testcase_response)
-
-    # print("\nConvert LLM Str Response string to JSON...")
-    # output_json = json.dumps(testcase_response, indent=4)
-    # print("\noutput_json type...")
-    # print(type(output_json))
-
-    # Set up file name structure for JSON files output/input of Test Cases
-    #sFile_TC_suffix = "_test_case_steps"    
-
-    # if tc_Response is not None:
+    # if the LLM has responded with suggested test cases 
+    # then write the test cases to a file for Zephyr Squad impor:
     if testcase_response is not None:
-                                               
-        # Write the successful JSON output to a file
-       
-        try:
-            json_file_name = f"{jira_ticket}{sFile_TC_suffix}.json"
-            generate_excel_from_json(json_file_name, epic_link)
-            logging.info("\n Successfully Generated AI Content and Created XL for Zephyr Squad Import\n")
-        except Exception as e:
-            logging.error(f"Error generating Excel file: {e}")
-            print(f"Error generating Excel file: {e}")
-    
-    return final_response
+        
+        # Writing Test Case Response from LLM to a text file
+        txt_file_name = f"{jira_ticket}{sFile_TC_suffix}.txt"
+        # Prepare the JSON file name for output
+        json_file_name = f"{jira_ticket}{sFile_TC_suffix}.json"
+
+        # Write the LLM test case response output to a file to load into Zephyr Squad
+        build_Zephyr_Import_File(testcase_response,
+                                 txt_file_name, 
+                                 json_file_name, 
+                                 epic_link)
+    else:
+        print("\nNo test cases generated by the LLM...")
+        logging.error("LLM response was empty. No test cases generated.")    
+
+
+
 
 # Main application loop
 if __name__ == "__main__":
@@ -286,4 +226,4 @@ if __name__ == "__main__":
         # Get the epic link from command line arguments
         epic_link = sys.argv[2]
 
-        answer = bdd_refine(jira_ticket, epic_link)
+        bdd_refine(jira_ticket, epic_link)
