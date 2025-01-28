@@ -1,0 +1,9 @@
+
+
+Test Data Assumptions:
+1. A dataset of transactions spanning at least January 2024 with varied dates
+2. Transactions with amounts ranging from below $500 to above $1000
+3. Multiple transaction types including Wire Transfers and Checks
+4. Minimum of 100 transactions to effectively test filtering
+5. Transaction data should include edge cases (e.g., $500 exactly, date range boundaries)
+6. Mix of transaction statuses and types to test multiple filter combinations

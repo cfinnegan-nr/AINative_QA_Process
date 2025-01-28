@@ -22,33 +22,60 @@ def load_sample_json():
         print("Error decoding JSON from the file.")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
+    return data    
     
 
     
-def trim_json_file(input_file_path):
+def trim_txt_file(input_file_path):
+    """
+    The LLM will add text either before and after the JSON content that needs to be removed.
+
+    This function will trim the text file to only include the JSON content.
+
+    The additional text will be written to two separate files for review. It contains assumptions made by the LLM
+    that could provide valuable information for the test case revision process.
+    """ 
     try:
         # Read the entire content of the file
         with open(input_file_path, 'r', encoding='utf-8') as file:
             content = file.read()
 
+        # Find the position of the first "{" character
+        brace_start_index = content.find('{')
+
+        # Check if "{" was found
+        if brace_start_index == -1:
+            raise ValueError("No '{' character found in the file.")
+
+        # Write the content before the "{" character to 'Test Cases Assumptions One'
+        with open('Test Cases Assumptions One.txt', 'w', encoding='utf-8') as file:
+            file.write(content[:brace_start_index])
+
+        # Keep only the content after the "{" character
+        trimmed_content_after_brace = content[brace_start_index:]
+
         # Find the position of the last '}' character
-        last_brace_index = content.rfind('}')
+        last_brace_index = trimmed_content_after_brace.rfind('}')
 
         # Check if '}' was found
         if last_brace_index == -1:
-            raise ValueError("No closing brace '}' found in the file.")
+            raise ValueError("No closing brace '}' found in the file after the '{' character.")
 
         # Keep only the content up to and including the last '}'
-        trimmed_content = content[:last_brace_index + 1]
+        trimmed_content = trimmed_content_after_brace[:last_brace_index + 1]
 
-        # Write the trimmed content back to the file (or to a new file if needed)
+        # Write the trimmed content back to the original file
         with open(input_file_path, 'w', encoding='utf-8') as file:
             file.write(trimmed_content)
 
-        #print(f"\nFile {input_file_path} has been trimmed successfully.")
+        # Write the content beyond the last '}' character to 'Test Cases Assumptions Two'
+        if last_brace_index + 1 < len(trimmed_content_after_brace):
+            with open('Test Cases Assumptions Two.txt', 'w', encoding='utf-8') as file:
+                file.write(trimmed_content_after_brace[last_brace_index + 1:])
 
     except Exception as e:
-        print(f"\nAn error occurred in the output LLM text file trim process: {e}")    
+        print(f"\nAn error occurred in the output LLM text file trim process: {e}")
     
 
 def format_json(input_file_path, output_file_path):
@@ -57,9 +84,7 @@ def format_json(input_file_path, output_file_path):
     #output_file_path = f"{jira_ticket}{sFile_TC_suffix}.json"
 
     # Trim the text file to remove any extra content
-    trim_json_file(input_file_path)
-    
-    import json
+    trim_txt_file(input_file_path)
     
     # Read the JSON content from the text file
     try:

@@ -73,7 +73,7 @@ def add_label_to_jira_ticket(jira_ticket, label, timeout=10):
     
     # Get current labels first to avoid duplicates
     current_ticket = retrieve_jira_ticket_from_server(jira_ticket)
-    print("\nAdding Label to JIRA ticket...")
+    print("\nStage 2b: Adding Label to JIRA ticket...")
     if current_ticket and 'fields' in current_ticket and 'labels' in current_ticket['fields']:
         current_labels = current_ticket['fields']['labels']
         if label not in current_labels:
@@ -138,6 +138,7 @@ def create_jira_comments_in_chunks(jira_ticket, comment, timeout=10):
     """
     Create comments on a JIRA ticket in chunks to fit within JIRA's comment character limit.
     """
+    print("\nStage 2c: Adding Bdd comments to JIRA ticket...")
     chunks = chunk_text(comment)
     for chunk in chunks:
         create_jira_comment(jira_ticket, chunk, timeout)

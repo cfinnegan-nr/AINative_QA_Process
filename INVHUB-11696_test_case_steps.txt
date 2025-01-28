@@ -1,0 +1,128 @@
+{
+    "testCases": [
+        {
+            "id": "TC-FILTER-001",
+            "summary": "Verify date range filtering functionality",
+            "preconditions": "User is logged in and on transaction list view with multiple records present",
+            "steps": [
+                {
+                    "step": "Click the filter icon on the Date column",
+                    "expectedResult": "Date filter options are displayed"
+                },
+                {
+                    "step": "Set date range from 2024-01-01 to 2024-01-31",
+                    "expectedResult": "Date range is applied"
+                },
+                {
+                    "step": "Verify displayed transactions",
+                    "expectedResult": "Only transactions between 2024-01-01 and 2024-01-31 are shown"
+                },
+                {
+                    "step": "Check filter icon state",
+                    "expectedResult": "Filter icon displays in active state"
+                }
+            ],
+            "postconditions": "Transaction list shows filtered date range results"
+        },
+        {
+            "id": "TC-FILTER-002",
+            "summary": "Verify sorting of filtered transactions",
+            "preconditions": "User has filtered transactions to show amounts greater than $1000",
+            "steps": [
+                {
+                    "step": "Click sort icon on Date column",
+                    "expectedResult": "Sort options are displayed"
+                },
+                {
+                    "step": "Verify sorted transactions",
+                    "expectedResult": "Transactions are sorted by date while maintaining $1000+ filter"
+                }
+            ],
+            "postconditions": "Filtered transactions remain sorted by date"
+        },
+        {
+            "id": "TC-FILTER-003",
+            "summary": "Verify multiple column filter functionality",
+            "preconditions": "User is on transaction list view",
+            "steps": [
+                {
+                    "step": "Apply Amount filter for values above $500",
+                    "expectedResult": "Only transactions above $500 are displayed"
+                },
+                {
+                    "step": "Apply Transaction Type filter for Wire Transfers",
+                    "expectedResult": "Only wire transfers above $500 are displayed"
+                },
+                {
+                    "step": "Verify filter icons",
+                    "expectedResult": "Both column filters show active state"
+                }
+            ],
+            "postconditions": "Multiple filters are successfully applied"
+        },
+        {
+            "id": "TC-FILTER-004",
+            "summary": "Verify clear all filters functionality",
+            "preconditions": "Multiple filters are active on transaction list",
+            "steps": [
+                {
+                    "step": "Click Clear All Filters button",
+                    "expectedResult": "All filters are removed"
+                },
+                {
+                    "step": "Verify transaction list",
+                    "expectedResult": "Complete unfiltered transaction list is displayed"
+                },
+                {
+                    "step": "Check filter icons",
+                    "expectedResult": "No filter icons show active state"
+                }
+            ],
+            "postconditions": "Transaction list returns to unfiltered state"
+        },
+        {
+            "id": "TC-FILTER-005",
+            "summary": "Verify empty filter results handling",
+            "preconditions": "User is on transaction list view",
+            "steps": [
+                {
+                    "step": "Apply Transaction Type filter for Check",
+                    "expectedResult": "Filter is applied"
+                },
+                {
+                    "step": "Verify empty results message",
+                    "expectedResult": "'No matching transactions found' message is displayed"
+                },
+                {
+                    "step": "Verify clear filter option",
+                    "expectedResult": "Option to clear filters is visible and clickable"
+                }
+            ],
+            "postconditions": "System properly handles no matching results"
+        },
+        {
+            "id": "TC-FILTER-006",
+            "summary": "Verify filter persistence across page navigation",
+            "preconditions": "Filters are applied to transaction list",
+            "steps": [
+                {
+                    "step": "Navigate away from transaction list page",
+                    "expectedResult": "User leaves transaction list view"
+                },
+                {
+                    "step": "Return to transaction list page",
+                    "expectedResult": "Transaction list page loads"
+                },
+                {
+                    "step": "Verify filter state",
+                    "expectedResult": "Previously applied filters are still active"
+                },
+                {
+                    "step": "Verify filtered results",
+                    "expectedResult": "Filtered results are displayed as before navigation"
+                }
+            ],
+            "postconditions": "Filters persist through page navigation"
+        }
+    ]
+}
