@@ -88,7 +88,7 @@ def generate_excel_from_json(json_file, epic_link):
         # Save the workbook
         output_file = "Zephyr_Test_Cases_Output.xlsx"
         wb.save(output_file)
-        print(("\nStage 4: Excel file '{output_file}' created successfully."))
+        print((f"\nStage 4: Excel file '{output_file}' created successfully.\n"))
         logging.info(f"Stage 4b - Excel file '{output_file}' created successfully.")
 
     except FileNotFoundError:

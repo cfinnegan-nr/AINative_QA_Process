@@ -250,7 +250,7 @@ def bdd_refine(jira_ticket, epic_link):
     # print(type(output_json))
 
     # Set up file name structure for JSON files output/input of Test Cases
-    sFile_TC_suffix = "_test_case_steps"    
+    #sFile_TC_suffix = "_test_case_steps"    
 
     # if tc_Response is not None:
     if testcase_response is not None:
