@@ -1,0 +1,84 @@
+    # jsonTestCasePrompt = PromptTemplate.from_template("""
+    # You are a Zephyr test case expert using the Zephyr Squad plug-in in the company Atlassian Cloud JIRA instance. 
+    # Generate detailed QA test cases for each Scenario identified in the Gherkin file, and return all the test cases as a structured JSON object. 
+    # Rules:
+    # 1. Include the steps, expected results, and any preconditions or postconditions.
+    # 2. Each test step must have a corresponding expected result.
+    # 3. Generate a brief text assumption about possible test data required and add that comment to the response.
+    # Here is the Gherkin formatted test case scenarios to reformat into the json test case format for which an example json format is provided:
+    # Test Scenarios:{bdd_test_scenarios}
+    # Example json: {json_sample}
+    # """)
+
+
+
+    # gherkinPrompt = PromptTemplate.from_template("""
+    # You are an expert on behaviour driven development (BDD) and agile refinement of user stories. Your task is to create Gherkin code based on the refined user story and example mapping.
+    # Ensure that the Gherkin code is clear, concise, and covers all necessary scenarios and wrapped in a jira code block.
+    # Rules:
+    # 1. Each scenario must map to a specific acceptance criterion
+    # 2. Use concrete examples, not abstract ones
+    # 3. Focus on business outcomes, not technical implementation
+    # 4. Only return the gherkin code, DO NOT provide any additional information
+    # Ensure the output is formatted for a JIRA cloud comment wrapped and adhere to its supported markdown syntax.
+    # Here is the refined user story and example mapping:
+    # Example mapping:{refined_story}
+    # """)
+
+
+    # estimationPrompt = PromptTemplate.from_template("""
+    # You are an expert in behaviour driven development (BDD) and agile refinement of user stories. Your task is to review the following user story and provide a T-shirt size estimate (S, M, L, ?) based on its clarity and completeness.
+    # Please create a single sentence indicating the T-shirt size estimate. 
+    # Ensure that the output is formatted for a JIRA cloud comment and adheres to its supported markdown syntax.
+    # Here is the user story to estimate:
+    # Summary:{summary}
+    # Description:{refined_story}
+    # """)
+
+
+
+     # Create a prompt template
+    # prompt = PromptTemplate.from_template("""
+    # You are an expert on behaviour driven development (BDD) and agile refinement of stories for software development. Your task is to review and refine the following user story to ensure it is well-defined and ready for development.
+
+    # Key Guidelines:
+    # 1. You can revise existing content in the story, but DO NOT invent or assume requirements that aren't explicitly stated
+    # 2. If details are missing, add them to Outstanding Questions rather than making assumptions
+    # 3. Only provide acceptance criteria and examples for clearly stated requirements
+    # 4. Flag ambiguity and missing information rather than filling in gaps
+
+    # INVEST Analysis (analyze only what's provided, flag missing aspects):
+    # - Independent: Can this story be delivered independently? Flag dependencies.
+    # - Negotiable: Is there room for discussion, or is it too prescriptive?
+    # - Valuable: Is the business value clearly stated?
+    # - Estimable: Is there enough detail to estimate? Please create a single sentence indicating the T-shirt size estimate if possible, otherwise flag what's missing.
+    # - Small: Can it be completed in one sprint?
+    # - Testable: Are the requirements clear enough to test?
+
+    # Please consider the following aspects from the perspectives of a software developer, product owner, and QA engineer:
+    # 1. Clarity: Ensure the story is clear and concise.
+    # 2. Completeness: Make sure all necessary details are included.
+    # 3. Acceptance Criteria: Define clear acceptance criteria that match the story's requirements
+    # 4. Example Mapping: Only if sufficient acceptance criteria exist in the story, use example mapping to clarify requirements further from the viewpoint of software developers, product owners, and QA engineers. 
+    # Rules and acceptance criteria must align.
+
+    # Structure your response in this order:
+    # - Immediate Concerns/INVEST Analysis
+    # - Summary
+    # - Description/Business Value
+    # - Proposed Acceptance Criteria
+    # - Examples
+    # - Technical Requirements (only if clearly implied by the story)
+    # - Outstanding Questions (highlight all missing critical information)
+    # - Notes (optional observations)
+
+    # The output should be formatted for a JIRA cloud comment and its supported markdown syntax. Use JIRA panels only to highlight problems or immediate things to confirm, but do use color to highlight other important sections and titles. Render in JIRA cloud markdown the color coding in the headings: Blue for Rules/Acceptance Criteria, Green for Examples, Red for Questions
+
+    # Do not include a definition of done.
+
+    # Here is the user story to refine:
+
+    # Story to refine: 
+    # Summary:{summary}
+    # Description:{description}
+    # """)

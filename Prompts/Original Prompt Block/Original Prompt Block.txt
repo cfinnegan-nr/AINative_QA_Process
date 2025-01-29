@@ -1,18 +1,3 @@
-"""
-The purpose of this file is to retrieve the prompts for the Langchain model.
-
-The prompts are used to guide the user in providing the necessary information for the Langchain model to process.
-
-
-"""
-
-
-# Function to retrieve the prompts
-from langchain_core.prompts import PromptTemplate
-
-
-def retieve_Prompts():
-
     # Create a prompt template
     prompt = PromptTemplate.from_template("""
     You are an expert on behaviour driven development (BDD) and agile refinement of stories for software development. Your task is to review and refine the following user story to ensure it is well-defined and ready for development.
@@ -81,6 +66,9 @@ def retieve_Prompts():
     Example mapping:{refined_story}
     """)
 
+    # Retrieve the prompt for the LLM to generate the test case (Json format)
+    sTC_Prompt = retieve_TestCasePrompt()
+
     jsonTestCasePrompt = PromptTemplate.from_template("""
     You are a Zephyr test case expert using the Zephyr Squad plug-in in the company Atlassian Cloud JIRA instance. 
     Generate detailed QA test cases for each Scenario identified in the Gherkin file, and return all the test cases as a structured JSON object. 
@@ -92,5 +80,3 @@ def retieve_Prompts():
     Test Scenarios:{bdd_test_scenarios}
     Example json: {json_sample}
     """)
-
-    return prompt, estimationPrompt, gherkinPrompt, jsonTestCasePrompt

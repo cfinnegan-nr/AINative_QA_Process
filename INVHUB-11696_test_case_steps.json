@@ -1,128 +1,84 @@
 {
     "testCases": [
         {
-            "id": "TC-FILTER-001",
-            "summary": "Verify date range filtering functionality",
-            "preconditions": "User is logged in and on transaction list view with multiple records present",
+            "id": "TC-TRANS-001",
+            "summary": "Verify amount filter and sort functionality",
+            "preconditions": "User is on the transaction list page with 100 transactions loaded",
             "steps": [
                 {
-                    "step": "Click the filter icon on the Date column",
-                    "expectedResult": "Date filter options are displayed"
+                    "step": "Apply amount filter for transactions greater than $1000",
+                    "expectedResult": "Only transactions with amounts exceeding $1000 are displayed"
                 },
                 {
-                    "step": "Set date range from 2024-01-01 to 2024-01-31",
-                    "expectedResult": "Date range is applied"
-                },
-                {
-                    "step": "Verify displayed transactions",
-                    "expectedResult": "Only transactions between 2024-01-01 and 2024-01-31 are shown"
-                },
-                {
-                    "step": "Check filter icon state",
-                    "expectedResult": "Filter icon displays in active state"
+                    "step": "Sort the filtered results by date in descending order",
+                    "expectedResult": "Transactions are arranged from newest to oldest date while maintaining the amount filter"
                 }
             ],
-            "postconditions": "Transaction list shows filtered date range results"
+            "postconditions": "Transaction list shows filtered and sorted results"
         },
         {
-            "id": "TC-FILTER-002",
-            "summary": "Verify sorting of filtered transactions",
-            "preconditions": "User has filtered transactions to show amounts greater than $1000",
+            "id": "TC-TRANS-002",
+            "summary": "Verify filter clearing on Copilot refresh",
+            "preconditions": "User is on the transaction list page with date filter applied for last 30 days",
             "steps": [
                 {
-                    "step": "Click sort icon on Date column",
-                    "expectedResult": "Sort options are displayed"
+                    "step": "Trigger Copilot to return new transaction data",
+                    "expectedResult": "Date filter is automatically cleared"
                 },
                 {
-                    "step": "Verify sorted transactions",
-                    "expectedResult": "Transactions are sorted by date while maintaining $1000+ filter"
+                    "step": "Observe the transaction list",
+                    "expectedResult": "All new transaction data is displayed without any filters applied"
                 }
             ],
-            "postconditions": "Filtered transactions remain sorted by date"
+            "postconditions": "Transaction list shows unfiltered new data"
         },
         {
-            "id": "TC-FILTER-003",
-            "summary": "Verify multiple column filter functionality",
-            "preconditions": "User is on transaction list view",
+            "id": "TC-TRANS-003",
+            "summary": "Verify sort persistence with filtered results",
+            "preconditions": "User is on the transaction list page with transactions sorted by amount in ascending order",
             "steps": [
                 {
-                    "step": "Apply Amount filter for values above $500",
-                    "expectedResult": "Only transactions above $500 are displayed"
+                    "step": "Apply filter for transaction type 'Credit'",
+                    "expectedResult": "Only credit transactions are displayed"
                 },
                 {
-                    "step": "Apply Transaction Type filter for Wire Transfers",
-                    "expectedResult": "Only wire transfers above $500 are displayed"
-                },
-                {
-                    "step": "Verify filter icons",
-                    "expectedResult": "Both column filters show active state"
+                    "step": "Verify sort order",
+                    "expectedResult": "Credit transactions remain sorted by amount in ascending order"
                 }
             ],
-            "postconditions": "Multiple filters are successfully applied"
+            "postconditions": "Transaction list shows filtered credit transactions in sorted order"
         },
         {
-            "id": "TC-FILTER-004",
-            "summary": "Verify clear all filters functionality",
-            "preconditions": "Multiple filters are active on transaction list",
+            "id": "TC-TRANS-004",
+            "summary": "Verify multiple column filtering",
+            "preconditions": "User is on the transaction list page",
             "steps": [
                 {
-                    "step": "Click Clear All Filters button",
-                    "expectedResult": "All filters are removed"
+                    "step": "Apply date filter for last 7 days",
+                    "expectedResult": "Only transactions from the last 7 days are displayed"
                 },
                 {
-                    "step": "Verify transaction list",
-                    "expectedResult": "Complete unfiltered transaction list is displayed"
-                },
-                {
-                    "step": "Check filter icons",
-                    "expectedResult": "No filter icons show active state"
+                    "step": "Apply amount filter for greater than $500",
+                    "expectedResult": "Only transactions meeting both criteria are displayed: last 7 days AND amount > $500"
                 }
             ],
-            "postconditions": "Transaction list returns to unfiltered state"
+            "postconditions": "Transaction list shows results matching both filter criteria"
         },
         {
-            "id": "TC-FILTER-005",
-            "summary": "Verify empty filter results handling",
-            "preconditions": "User is on transaction list view",
+            "id": "TC-TRANS-005",
+            "summary": "Verify help guide filtering documentation",
+            "preconditions": "User has access to the help guide",
             "steps": [
                 {
-                    "step": "Apply Transaction Type filter for Check",
-                    "expectedResult": "Filter is applied"
+                    "step": "Open the help guide",
+                    "expectedResult": "Help guide is displayed"
                 },
                 {
-                    "step": "Verify empty results message",
-                    "expectedResult": "'No matching transactions found' message is displayed"
-                },
-                {
-                    "step": "Verify clear filter option",
-                    "expectedResult": "Option to clear filters is visible and clickable"
+                    "step": "Navigate to filtering section",
+                    "expectedResult": "Filtering documentation is visible with examples for each filter type"
                 }
             ],
-            "postconditions": "System properly handles no matching results"
-        },
-        {
-            "id": "TC-FILTER-006",
-            "summary": "Verify filter persistence across page navigation",
-            "preconditions": "Filters are applied to transaction list",
-            "steps": [
-                {
-                    "step": "Navigate away from transaction list page",
-                    "expectedResult": "User leaves transaction list view"
-                },
-                {
-                    "step": "Return to transaction list page",
-                    "expectedResult": "Transaction list page loads"
-                },
-                {
-                    "step": "Verify filter state",
-                    "expectedResult": "Previously applied filters are still active"
-                },
-                {
-                    "step": "Verify filtered results",
-                    "expectedResult": "Filtered results are displayed as before navigation"
-                }
-            ],
-            "postconditions": "Filters persist through page navigation"
+            "postconditions": "User can access comprehensive filtering documentation"
         }
     ]
 }

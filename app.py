@@ -44,7 +44,7 @@ from ZephyrImport import build_Zephyr_Import_File, generate_excel_from_json
 from dataformatting import load_sample_json
 
 # Import custom function to retrieve the prompts
-from retievePrompts import retieve_Prompts
+from retrievePrompts import retrieve_Prompts
 
 
 # Import LangChain modules
@@ -78,23 +78,52 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
         }
 
     # Retrieve the prompts
-    prompt, estimationPrompt, gherkinPrompt, jsonTestCasePrompt = retieve_Prompts()
+    prompt, estimationPrompt, gherkinPrompt, jsonTestCasePrompt = retrieve_Prompts()
     
     # Create chains for each expertise
-    print("\nStage 1a: Creating chains for each expertise...")
-    refine_chain = prompt | llm | StrOutputParser()
-    estimation_chain = estimationPrompt | llmlowtemp | StrOutputParser()
-    gherkin_chain = gherkinPrompt | llmlowtemp |  StrOutputParser()
-    jsontestcase_chain = jsonTestCasePrompt | llmlowtemp |  StrOutputParser()
+    try:
+        # Inform the user that the process of creating chains has started
+        print("\nStage 1a: Creating chains for each expertise...")
+    
+        # Create a refinement chain using the prompt, language model, and output parser
+        refine_chain = prompt | llm | StrOutputParser()
+    
+        # Create an estimation chain using the estimation prompt, low temperature language model, and output parser
+        estimation_chain = estimationPrompt | llmlowtemp | StrOutputParser()
+    
+        # Create a Gherkin chain using the Gherkin prompt, low temperature language model, and output parser
+        gherkin_chain = gherkinPrompt | llmlowtemp | StrOutputParser()
+    
+        # Create a JSON test case chain using the JSON test case prompt, low temperature language model, and output parser
+        jsontestcase_chain = jsonTestCasePrompt | llmlowtemp | StrOutputParser()
+    
+    except Exception as e:
+        # Catch any exception that occurs during the chain creation process
+        # Log the exception message for debugging purposes
+        print(f"An error occurred while creating chains: {e}")
    
     
-    # Invoke each chain sequentially
+        # Invoke each chain sequentially
     print("\nStage 1b: Invoking and processing each chain sequentially...")
-    final_response = refine_chain.invoke({"summary":story["summary"], "description": story["description"]})
-    estimate_response = estimation_chain.invoke({"summary": story["summary"], "refined_story": final_response})
-    gherkin_response = gherkin_chain.invoke({"refined_story": final_response})
-    testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, "json_sample": load_sample_json()})
     
+    try:
+        # Invoke the refine_chain with the summary and description from the story
+        final_response = refine_chain.invoke({"summary": story["summary"], "description": story["description"]})
+        
+        # Invoke the estimation_chain with the summary and the refined story
+        estimate_response = estimation_chain.invoke({"summary": story["summary"], "refined_story": final_response})
+        
+        # Invoke the gherkin_chain with the refined story
+        gherkin_response = gherkin_chain.invoke({"refined_story": final_response})
+        
+        # Invoke the jsontestcase_chain with the BDD test scenarios and a sample JSON
+        testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, "json_sample": load_sample_json()})
+    
+    except Exception as e:
+        # Print the exception message if any of the invocations fail
+        print(f"An error occurred during the chain invocation process: {e}")
+    
+
     print("\nStage 1c: Final Refined Story generated:...")
     
     # Create a comment on the JIRA ticket with the refined BDD data (Gherkin format)

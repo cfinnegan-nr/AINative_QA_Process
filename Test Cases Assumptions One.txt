@@ -1,0 +1,2 @@
+I'll convert the Gherkin scenarios into detailed test cases following the provided JSON format. Here's the structured test cases:
+

@@ -1,0 +1,6 @@
+You are an expert in behaviour driven development (BDD) and agile refinement of user stories. Your task is to review the following user story and provide a T-shirt size estimate (S, M, L, ?) based on its clarity and completeness.
+    Please create a single sentence indicating the T-shirt size estimate. 
+    Ensure that the output is formatted for a JIRA cloud comment and adheres to its supported markdown syntax.
+    Here is the user story to estimate:
+    Summary:{summary}
+    Description:{refined_story}
