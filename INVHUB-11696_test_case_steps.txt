@@ -2,79 +2,79 @@
   "testCases": [
     {
       "id": "TC-INVHUB-11697-01",
-      "summary": "Verify single amount filter functionality",
+      "summary": "Verify single date filter functionality",
       "preconditions": "User is logged in as investigator and on transaction list page",
       "steps": [
         {
-          "step": "Click on amount filter option",
-          "expectedResult": "Amount filter dropdown is displayed"
+          "step": "Click on date filter dropdown",
+          "expectedResult": "Date filter options are displayed"
         },
         {
-          "step": "Select 'Greater than $1000' option",
-          "expectedResult": "Only transactions over $1000 are shown in the list"
-        },
-        {
-          "step": "Check transaction count",
-          "expectedResult": "Count reflects number of filtered transactions"
-        },
-        {
-          "step": "Verify filter indicator",
-          "expectedResult": "Filter indicator is visible in the UI"
+          "step": "Select 'Last 7 days' option",
+          "expectedResult": "1. Only transactions from last 7 days are shown\n2. Date filter indicator shows as active\n3. Transaction count updates to show filtered total"
         }
       ],
-      "postconditions": "Amount filter is successfully applied"
+      "postconditions": "Date filter is applied showing last 7 days of transactions"
     },
     {
-      "id": "TC-INVHUB-11697-02",
-      "summary": "Verify multiple concurrent filters functionality",
-      "preconditions": "User is logged in as investigator and on transaction list page",
+      "id": "TC-INVHUB-11697-02", 
+      "summary": "Verify multiple filter combination",
+      "preconditions": "User has date filter for 'Last 7 days' already applied",
       "steps": [
         {
-          "step": "Apply amount filter for 'Greater than $500'",
-          "expectedResult": "Transactions over $500 are displayed"
-        },
-        {
-          "step": "Apply date filter for 'Last 7 days'",
-          "expectedResult": "Only transactions matching both amount and date criteria are shown"
-        },
-        {
-          "step": "Check filter indicators",
-          "expectedResult": "Two separate filter indicators are visible in the UI"
+          "step": "Apply amount filter for 'Greater than $1000'",
+          "expectedResult": "1. Only transactions matching both date and amount criteria are displayed\n2. Both filter indicators show as active\n3. Transaction count updates to reflect combined filters"
         }
       ],
-      "postconditions": "Multiple filters are successfully applied"
+      "postconditions": "Multiple filters are applied showing filtered transaction subset"
     },
     {
       "id": "TC-INVHUB-11697-03",
-      "summary": "Verify filter persistence across navigation",
-      "preconditions": "User has applied filters to transaction list",
+      "summary": "Verify individual filter removal",
+      "preconditions": "Multiple filters are active on transaction list",
       "steps": [
         {
-          "step": "Navigate to a different page",
-          "expectedResult": "Page navigation is successful"
-        },
-        {
-          "step": "Return to transaction list page",
-          "expectedResult": "Previously applied filters remain active and results are filtered accordingly"
+          "step": "Click to clear date filter",
+          "expectedResult": "1. Date filter is removed\n2. Other active filters remain unchanged\n3. Results update to show transactions matching remaining filters"
         }
       ],
-      "postconditions": "Filter settings are preserved across navigation"
+      "postconditions": "Selected filter is removed while others remain active"
     },
     {
       "id": "TC-INVHUB-11697-04",
-      "summary": "Verify empty results handling",
+      "summary": "Verify sorting of filtered results",
+      "preconditions": "Transaction Type filter for 'Credit' is applied",
+      "steps": [
+        {
+          "step": "Click amount column header",
+          "expectedResult": "1. Filtered credit transactions are sorted by amount\n2. Only credit transactions remain visible in sorted order"
+        }
+      ],
+      "postconditions": "Filtered results are sorted by selected column"
+    },
+    {
+      "id": "TC-INVHUB-11697-05",
+      "summary": "Verify Copilot command filter clearing",
+      "preconditions": "Active filters are applied to transaction list",
+      "steps": [
+        {
+          "step": "Execute Copilot command that returns transaction results",
+          "expectedResult": "1. All existing filters are cleared\n2. New Copilot results are displayed without filters"
+        }
+      ],
+      "postconditions": "Copilot results displayed with no active filters"
+    },
+    {
+      "id": "TC-INVHUB-11697-06",
+      "summary": "Verify no matching results handling",
       "preconditions": "User is on transaction list page",
       "steps": [
         {
           "step": "Apply filters that result in no matching transactions",
-          "expectedResult": "'No matching transactions' message is displayed"
-        },
-        {
-          "step": "Verify clear filters option",
-          "expectedResult": "Option to clear filters is visible and clickable"
+          "expectedResult": "1. 'No matching transactions found' message is displayed\n2. Option to clear all filters is shown"
         }
       ],
-      "postconditions": "Empty state handling is properly displayed"
+      "postconditions": "System shows appropriate messaging for no results"
     }
   ]
 }

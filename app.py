@@ -57,8 +57,11 @@ from operator import itemgetter
 
 # Import the LangChain module
 # Initialize the language model
+
 llm = ChatOpenAI(temperature=0.5, model="claude-3-5-sonnet-v2")
 llmlowtemp = ChatOpenAI(temperature=0.1, model="claude-3-5-sonnet-v2")
+#llmlowertemp = ChatOpenAI(temperature=0.05, model="gpt-4o")
+llmlowertemp = ChatOpenAI(temperature=0.05, model="claude-3-5-sonnet-v2")
 
 
 
@@ -92,10 +95,10 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
         estimation_chain = estimationPrompt | llmlowtemp | StrOutputParser()
     
         # Create a Gherkin chain using the Gherkin prompt, low temperature language model, and output parser
-        gherkin_chain = gherkinPrompt | llmlowtemp | StrOutputParser()
+        gherkin_chain = gherkinPrompt | llmlowertemp | StrOutputParser()
     
         # Create a JSON test case chain using the JSON test case prompt, low temperature language model, and output parser
-        jsontestcase_chain = jsonTestCasePrompt | llmlowtemp | StrOutputParser()
+        jsontestcase_chain = jsonTestCasePrompt | llmlowertemp | StrOutputParser()
     
     except Exception as e:
         # Catch any exception that occurs during the chain creation process

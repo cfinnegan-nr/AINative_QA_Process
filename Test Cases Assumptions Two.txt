@@ -1,9 +1,8 @@
 
 
 Test Data Assumptions:
-- Sample transaction data with various amounts (>$1000, <$1000, >$500)
-- Transactions spanning different date ranges
-- Minimum of 100 test transactions for proper filter testing
-- Mix of transaction types and statuses
-- Test data should include edge cases for amount filtering
-- Date ranges should cover past 30 days minimum
+- Transaction database with entries spanning at least the last 30 days
+- Mix of transaction types (Credit/Debit)
+- Transactions with various amounts (both above and below $1000)
+- Minimum of 100 sample transactions for meaningful filtering
+- Test data should include edge cases for date ranges and amount thresholds
