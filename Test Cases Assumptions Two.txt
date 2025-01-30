@@ -1,10 +1,9 @@
 
 
 Test Data Assumptions:
-- Sample transaction data should include various amounts (both above and below $1000)
-- Transaction dates spanning at least the last 90 days
-- Mix of transaction types (Credit, Debit, etc.)
-- Transactions with different currencies and formats
-- Edge cases like $0 amounts and negative values
-- Transactions with special characters in descriptions
-- Large volume of transactions (100+) to test sorting performance
+- Sample transaction data with various amounts (>$1000, <$1000, >$500)
+- Transactions spanning different date ranges
+- Minimum of 100 test transactions for proper filter testing
+- Mix of transaction types and statuses
+- Test data should include edge cases for amount filtering
+- Date ranges should cover past 30 days minimum

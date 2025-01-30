@@ -1,84 +1,80 @@
 {
     "testCases": [
         {
-            "id": "TC-TRANS-001",
-            "summary": "Verify amount filter and sort functionality",
-            "preconditions": "User is on the transaction list page with 100 transactions loaded",
+            "id": "TC-INVHUB-11697-01",
+            "summary": "Verify single amount filter functionality",
+            "preconditions": "User is logged in as investigator and on transaction list page",
             "steps": [
                 {
-                    "step": "Apply amount filter for transactions greater than $1000",
-                    "expectedResult": "Only transactions with amounts exceeding $1000 are displayed"
+                    "step": "Click on amount filter option",
+                    "expectedResult": "Amount filter dropdown is displayed"
                 },
                 {
-                    "step": "Sort the filtered results by date in descending order",
-                    "expectedResult": "Transactions are arranged from newest to oldest date while maintaining the amount filter"
+                    "step": "Select 'Greater than $1000' option",
+                    "expectedResult": "Only transactions over $1000 are shown in the list"
+                },
+                {
+                    "step": "Check transaction count",
+                    "expectedResult": "Count reflects number of filtered transactions"
+                },
+                {
+                    "step": "Verify filter indicator",
+                    "expectedResult": "Filter indicator is visible in the UI"
                 }
             ],
-            "postconditions": "Transaction list shows filtered and sorted results"
+            "postconditions": "Amount filter is successfully applied"
         },
         {
-            "id": "TC-TRANS-002",
-            "summary": "Verify filter clearing on Copilot refresh",
-            "preconditions": "User is on the transaction list page with date filter applied for last 30 days",
+            "id": "TC-INVHUB-11697-02",
+            "summary": "Verify multiple concurrent filters functionality",
+            "preconditions": "User is logged in as investigator and on transaction list page",
             "steps": [
                 {
-                    "step": "Trigger Copilot to return new transaction data",
-                    "expectedResult": "Date filter is automatically cleared"
+                    "step": "Apply amount filter for 'Greater than $500'",
+                    "expectedResult": "Transactions over $500 are displayed"
                 },
                 {
-                    "step": "Observe the transaction list",
-                    "expectedResult": "All new transaction data is displayed without any filters applied"
+                    "step": "Apply date filter for 'Last 7 days'",
+                    "expectedResult": "Only transactions matching both amount and date criteria are shown"
+                },
+                {
+                    "step": "Check filter indicators",
+                    "expectedResult": "Two separate filter indicators are visible in the UI"
                 }
             ],
-            "postconditions": "Transaction list shows unfiltered new data"
+            "postconditions": "Multiple filters are successfully applied"
         },
         {
-            "id": "TC-TRANS-003",
-            "summary": "Verify sort persistence with filtered results",
-            "preconditions": "User is on the transaction list page with transactions sorted by amount in ascending order",
+            "id": "TC-INVHUB-11697-03",
+            "summary": "Verify filter persistence across navigation",
+            "preconditions": "User has applied filters to transaction list",
             "steps": [
                 {
-                    "step": "Apply filter for transaction type 'Credit'",
-                    "expectedResult": "Only credit transactions are displayed"
+                    "step": "Navigate to a different page",
+                    "expectedResult": "Page navigation is successful"
                 },
                 {
-                    "step": "Verify sort order",
-                    "expectedResult": "Credit transactions remain sorted by amount in ascending order"
+                    "step": "Return to transaction list page",
+                    "expectedResult": "Previously applied filters remain active and results are filtered accordingly"
                 }
             ],
-            "postconditions": "Transaction list shows filtered credit transactions in sorted order"
+            "postconditions": "Filter settings are preserved across navigation"
         },
         {
-            "id": "TC-TRANS-004",
-            "summary": "Verify multiple column filtering",
-            "preconditions": "User is on the transaction list page",
+            "id": "TC-INVHUB-11697-04",
+            "summary": "Verify empty results handling",
+            "preconditions": "User is on transaction list page",
             "steps": [
                 {
-                    "step": "Apply date filter for last 7 days",
-                    "expectedResult": "Only transactions from the last 7 days are displayed"
+                    "step": "Apply filters that result in no matching transactions",
+                    "expectedResult": "'No matching transactions' message is displayed"
                 },
                 {
-                    "step": "Apply amount filter for greater than $500",
-                    "expectedResult": "Only transactions meeting both criteria are displayed: last 7 days AND amount > $500"
+                    "step": "Verify clear filters option",
+                    "expectedResult": "Option to clear filters is visible and clickable"
                 }
             ],
-            "postconditions": "Transaction list shows results matching both filter criteria"
-        },
-        {
-            "id": "TC-TRANS-005",
-            "summary": "Verify help guide filtering documentation",
-            "preconditions": "User has access to the help guide",
-            "steps": [
-                {
-                    "step": "Open the help guide",
-                    "expectedResult": "Help guide is displayed"
-                },
-                {
-                    "step": "Navigate to filtering section",
-                    "expectedResult": "Filtering documentation is visible with examples for each filter type"
-                }
-            ],
-            "postconditions": "User can access comprehensive filtering documentation"
+            "postconditions": "Empty state handling is properly displayed"
         }
     ]
 }

@@ -44,7 +44,7 @@ from ZephyrImport import build_Zephyr_Import_File, generate_excel_from_json
 from dataformatting import load_sample_json
 
 # Import custom function to retrieve the prompts
-from retrievePrompts import retrieve_Prompts
+from retrievePrompts import retrieve_Prompts, get_additional_Gherkin_rules, get_additional_Zephyr_rules
 
 
 # Import LangChain modules
@@ -102,22 +102,33 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
         # Log the exception message for debugging purposes
         print(f"An error occurred while creating chains: {e}")
    
-    
+    print("\nThese are the additional rules added to the Gherkin prompt:")
+    print("\n", get_additional_Gherkin_rules())
+
+    print("\nThese are the additional rules added to the Test Case/Zephyr Import prompt:")
+    print("\n", get_additional_Zephyr_rules())
+
+
         # Invoke each chain sequentially
     print("\nStage 1b: Invoking and processing each chain sequentially...")
     
     try:
         # Invoke the refine_chain with the summary and description from the story
-        final_response = refine_chain.invoke({"summary": story["summary"], "description": story["description"]})
+        final_response = refine_chain.invoke({"summary": story["summary"], 
+                                              "description": story["description"]})
         
         # Invoke the estimation_chain with the summary and the refined story
-        estimate_response = estimation_chain.invoke({"summary": story["summary"], "refined_story": final_response})
+        estimate_response = estimation_chain.invoke({"summary": story["summary"], 
+                                                     "refined_story": final_response})
         
         # Invoke the gherkin_chain with the refined story
-        gherkin_response = gherkin_chain.invoke({"refined_story": final_response})
+        gherkin_response = gherkin_chain.invoke({"refined_story": final_response, 
+                                                 "additional_rules": get_additional_Gherkin_rules()})
         
         # Invoke the jsontestcase_chain with the BDD test scenarios and a sample JSON
-        testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, "json_sample": load_sample_json()})
+        testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, 
+                                                       "json_sample": load_sample_json(), 
+                                                       "additional_rules": get_additional_Zephyr_rules()})
     
     except Exception as e:
         # Print the exception message if any of the invocations fail

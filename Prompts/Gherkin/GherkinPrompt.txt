@@ -6,5 +6,6 @@
     3. Focus on business outcomes, not technical implementation
     4. Only return the gherkin code, DO NOT provide any additional information
     Ensure the output is formatted for a JIRA cloud comment wrapped and adhere to its supported markdown syntax.
-    Here is the refined user story and example mapping:
+    Here is the refined user story and example mapping along with additional rules specific to this JIRA project:
     Example mapping:{refined_story}
+	Additional JIRA project rules: {additional_rules}

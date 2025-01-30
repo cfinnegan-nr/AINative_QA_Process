@@ -11,6 +11,9 @@ import logging
 from langchain_core.prompts import PromptTemplate
 
 
+"""
+Set up the functions to retrieve the Test Case/Zephyr Import prompt
+"""
 def retrieve_TestCasePrompt():
 
     # Define the path to the file
@@ -27,8 +30,22 @@ def retrieve_TestCasePrompt():
 
     return file_content
 
+def get_additional_Zephyr_rules():
+
+    # Define the path to the file
+    sTCRFile_path = 'Prompts/Zephyr/AdditionalZephyrRules.txt'
+
+    # Open the file and read its contents into a string variable
+    with open(sTCRFile_path, 'r', encoding='utf-8') as file:
+        fTCRulesfile_content = file.read()
+
+    return fTCRulesfile_content
+    
 
 
+"""
+Set up the functions to retrieve the Gherkin prompt
+"""
 def retrieve_GherkinPrompt():
 
     # Define the path to the file
@@ -44,6 +61,20 @@ def retrieve_GherkinPrompt():
     # Function to retrieve the prompts
 
     return fGfile_content
+
+def get_additional_Gherkin_rules():
+
+        # Define the path to the file
+    sGRfile_path = 'Prompts/Gherkin/AdditionalGherkinRules.txt'
+
+    # Open the file and read its contents into a string variable
+    with open(sGRfile_path, 'r', encoding='utf-8') as file:
+        fGRulesfile_content = file.read()
+
+    return fGRulesfile_content
+
+
+
 
 
 
