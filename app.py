@@ -67,7 +67,7 @@ llmlowertemp = ChatOpenAI(temperature=0.05, model="claude-3-5-sonnet-v2")
 
 # Primary Function to retrieve the JIRA ticket data and build BDD output 
 # and Import files (EXCEL) for the Zephyr Squad Internal Import utility
-def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
+def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link, iteration_number):
 
     # Set up file name structure for JSON files output/input of Test Cases
     sFile_TC_suffix = "_test_case_steps"
@@ -77,7 +77,8 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
     if ticket_data:
         story = {
             "summary": ticket_data.get('fields', {}).get('summary', 'No summary found'),
-            "description": ticket_data.get('fields', {}).get('description', 'No description found')
+            "description": ticket_data.get('fields', {}).get('description', 'No description found'),
+            "issue": ticket_data.get('issuetype', 'No issuetype found')
         }
 
     # Retrieve the prompts
@@ -112,14 +113,22 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
     print("\n", get_additional_Zephyr_rules())
 
 
-        # Invoke each chain sequentially
+    # Invoke each chain sequentially
     print("\nStage 1b: Invoking and processing each chain sequentially...")
     
     try:
-        # Invoke the refine_chain with the summary and description from the story
-        final_response = refine_chain.invoke({"summary": story["summary"], 
-                                              "description": story["description"]})
-        
+        iterations = int(iteration_number.strip())
+        print(f"\nNumber of iterations for main and test case json prompt: {iterations}")
+        final_response = story["description"] 
+          
+        # Invoke main chain to refine the story through multiple iterations
+        num = 0
+        while num < iterations:
+            num = num + 1
+            final_response = refine_chain.invoke({"summary": story["summary"], 
+                                                  "description": final_response, 
+                                                  "issue":story["issue"]})
+
         # Invoke the estimation_chain with the summary and the refined story
         estimate_response = estimation_chain.invoke({"summary": story["summary"], 
                                                      "refined_story": final_response})
@@ -129,9 +138,19 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
                                                  "additional_rules": get_additional_Gherkin_rules()})
         
         # Invoke the jsontestcase_chain with the BDD test scenarios and a sample JSON
-        testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, 
-                                                       "json_sample": load_sample_json(), 
-                                                       "additional_rules": get_additional_Zephyr_rules()})
+        # testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, 
+        #                                                "json_sample": load_sample_json(), 
+        #                                                "additional_rules": get_additional_Zephyr_rules()})
+
+        # Invoke main chain to refine the story through multiple iterations
+        testcase_response = load_sample_json()
+        numTCIt = 0             
+        while numTCIt < iterations:
+            numTCIt = numTCIt + 1
+            testcase_response = jsontestcase_chain.invoke({"bdd_test_scenarios": gherkin_response, 
+                                                        "json_sample": testcase_response, 
+                                                        "additional_rules": get_additional_Zephyr_rules()})                                                       
+
     
     except Exception as e:
         # Print the exception message if any of the invocations fail
@@ -179,8 +198,8 @@ if __name__ == "__main__":
      # Build an XL from these test cases to use in Zephyr Squad Internal Import utility
 
 
-    if len(sys.argv) != 3:
-        print("Usage: python app.py <JIRA_TICKET> <EPIC_LINK>")
+    if len(sys.argv) != 4:
+        print("Usage: python app.py <JIRA_TICKET> <EPIC_LINK> <Iteration Number>")
     else:
  
         # python app.py INVHUB-11696 INVHUB-10821 - Sample Cmd Line Call
@@ -189,5 +208,8 @@ if __name__ == "__main__":
         jira_ticket = sys.argv[1]
         # Get the epic link from command line arguments
         epic_link = sys.argv[2]
+        # Get the iteration number from command line arguments
+        iteration_number = sys.argv[3]
 
-        generate_BDDs_Zephyr_Imports(jira_ticket, epic_link)
+        generate_BDDs_Zephyr_Imports(jira_ticket, epic_link, iteration_number)
+        print("\nProcess completed successfully!\n")

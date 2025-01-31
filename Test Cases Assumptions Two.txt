@@ -1,3 +1,2 @@
 
-
-[Note: The complete response would include test cases for all seven scenarios from the Gherkin file, following the same detailed structure. Each would include appropriate test data entries and maintain the required format. The test cases would cover filtering by Transaction Type, sorting filtered results, clearing multiple filters, filter reset on navigation, and filtering after Copilot interaction.]
+</output>
