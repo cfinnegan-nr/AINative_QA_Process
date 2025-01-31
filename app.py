@@ -142,7 +142,7 @@ def generate_BDDs_Zephyr_Imports(jira_ticket, epic_link):
     
     # Create a comment on the JIRA ticket with the refined BDD data (Gherkin format)
     comment = f"h1. AI Refinement Gherkin:\n{gherkin_response}"
-    
+    print(f"\nGherkin response looks like...{comment}")
 
     print("\nStage 2a: Updating JIRA ticket with BDD content...")
     # Post the comment in chunks to JIRA

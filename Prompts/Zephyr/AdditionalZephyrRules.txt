@@ -1,2 +1,2 @@
 Additional Rules: 
-1. No text is written in Latin.
+1. No text in the test cases is written in Latin.

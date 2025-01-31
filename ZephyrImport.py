@@ -17,7 +17,6 @@ from dataformatting import format_json
     The Excel file should be saved as "Zephyr_Test_Cases_Output.xlsx".
 
     For simplicty, some dummy variabels have been hardcoded in the function. 
-    These should be replaced with the actual values or fetched from the environment variables.
 
 
 """
@@ -97,24 +96,23 @@ def generate_excel_from_json(json_file, epic_link):
                     test_case.get('summary', ''),  # Test Summary
                     order_id,  # OrderId
                     step.get('step', ''),  # Step
-                    '',  # Test Data (optional, leaving empty)
+                    step.get('testData', ''), # Test Data 
                     step.get('expectedResult', ''),  # Expected Result
-                    "6414a0cd67102fc717c034d7",  # Assigned To
+                    "6414a0cd67102fc717c034d7",  # Assigned To C. Finnegan
                     "This test case has been built by GenAI Workbench for XL import via Internal Importer.",  # Comments
                     description,  # Description
                     "Core",  # Component
                     "external",  # jira-customfield-checkbox
-                    #"INVHUB-10821",  # Epic Link
                     epic_link,  # Epic Link
-                    "blocks",  # Linked issues
-                    "GenAI_Test_Case",  # Labels
-                    "IM-5000",  # Issue Key [To add steps]
-                    "blocks",  # Issue Link Type
-                    "IM-3000",  # Issues Key To Link
+                    "blocks",  # Linked issues - Dummy value
+                    "AINative(GenAI_Test_Case)",  # Labels
+                    "IM-5000",  # Issue Key [To add steps] - Dummy value
+                    "blocks",  # Issue Link Type - Dummy value
+                    "IM-3000",  # Issues Key To Link - Dummy value
                     "3 - Medium",  # Priority
-                    37,  # Sprint
-                    "Release-1.0",  # Version
-                    "Dublin"  # Cascade
+                    37,  # Sprint - Dummy value for Sprint ID ('Nice to Have Sprint' Ref)
+                    "Release-1.0",  # Version - Dummy value
+                    "Dublin"  # Cascade - Dummy value
                 ]
                 ws.append(row)
 

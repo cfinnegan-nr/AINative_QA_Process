@@ -1,3 +1,17 @@
 Additional Rules: 
-1. No text is written in Latin.
-2. No text is written in French.
+1. No text returned in the Gherkin description is written in Latin.
+2. Filter instructions for columns with numerical amounts do not allow mathematical operators symbols such as those for 'greater than' or 'equals'. Do not include these type of tests.
+3. The filter tests for Transaction lists will be limited to columns with these headins: "Transaction Date", "Debit/Credit", "Base Amount", "Transaction Type", and "Account ID".
+4. If the "Copilot" module, or any variation on that spelling, is referenced in the JIRA ticket description, assess if a specific Copilot test Scenario should be added to the output. 
+5. "AccountID" is a unique alphanumeric reference used for groups of transactions. Use the first value in the column list in any test scenario.
+6. Valid "Transaction Type" options for Transactions are only "CASH" or "DEBIT".
+7. An option to clear all filters exists after two or more filters have been activated. Include a test scenario for this.
+8. Transaction filter tests should include at least one filter test for amounts, and one for text values.
+9. For filter tests on amounts use the value in a given amount column that appears the most, as opposed to testing with an explicit value in the returned test scenario.
+10. All Date filters are based on a set of user entered values for a 'from' date and a 'to' date so any test scenario should reflect that input option. Use the oldest and second oldest dates in the column for 'from' and 'to' dates respectively.
+11. A Copilot interaction for transaction lists should be explicitly called out in a test scenario as asking a question of the inbuilt application 'ChatAI' to filter transactions based on the most frequent 'Base Amount' transaction value on screen and one of the values in 'Transaction Type'.
+12. Any filter button icon is changed from hollow to filled after being selected. Any applied filter is displayed above the top right corner of the Transaction List table. Add these checks to a 'THEN' clause in at least one returned test Scenario.
+13. Add at least one returned test Scenario that changes the sort on a column not being filtered and then verifies that this sort is based on an existing filtered column list.
+14. Ensure a test scenario is added to run at least one random filter test after a Copilot interaction has refreshed the transaction list screen.
+
+

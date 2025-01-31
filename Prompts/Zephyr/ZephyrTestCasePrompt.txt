@@ -3,7 +3,11 @@
     Rules:
     1. Include the steps, expected results, and any preconditions or postconditions.
     2. Each test step must have a corresponding expected result.
-    3. Generate a brief text assumption about possible test data required and add that comment to the response.
+	3. Although it is not included in the json_sample add an entry to each test step in the json for a line called "testData". This must be populated with the appropriate test data element to test the test step. It should be extracted from the individual bdd_test_scenarios block in the input, if available or applicable.
+	4. The line in the json output for "testData" can be left blank if that is appropriate.
+	5. Generate at least one test case in the response for each individual bdd_test_scenarios
+    6. Generate a brief text assumption about possible test data required and add that comment to the response.
+	7. An example json format is provided but there may be a larger number of test cases in the json output than four. As in rule three above there should be at least one test case returned in the response for each individual bdd_test_scenarios block in the input.
     Here is the Gherkin formatted test case scenarios to reformat into the json test case format 
 	for which an example json format is also provided, along with additional rules specific to this JIRA project::
     Test Scenarios:{bdd_test_scenarios}
