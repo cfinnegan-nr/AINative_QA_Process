@@ -1,42 +1,47 @@
 {
   "testCases": [
     {
-      "id": "TC-INVHUB-11696-01",
+      "id": "TC-INVHUB-11697-01",
       "summary": "Filter transactions by date range",
-      "preconditions": "User is logged into the application and has access to the transaction list page",
+      "preconditions": "User is on the Transaction List screen AND transaction list contains data",
       "steps": [
-        {
-          "step": "Navigate to the transaction list page",
-          "expectedResult": "Transaction list page is displayed",
-          "testData": ""
-        },
         {
           "step": "Click on Transaction Date filter",
           "expectedResult": "Date filter options are displayed",
           "testData": ""
         },
         {
-          "step": "Enter the oldest date in the from field",
+          "step": "Enter from date in the filter",
           "expectedResult": "From date is accepted",
           "testData": "2023-01-01"
         },
         {
-          "step": "Enter the second oldest date in the to field",
+          "step": "Enter to date in the filter",
           "expectedResult": "To date is accepted",
-          "testData": "2023-01-31"
+          "testData": "2023-01-15"
+        },
+        {
+          "step": "Verify filter icon state",
+          "expectedResult": "Filter icon changes from hollow to filled",
+          "testData": ""
+        },
+        {
+          "step": "Check active filter display",
+          "expectedResult": "Active filter appears above transaction list table",
+          "testData": ""
         },
         {
           "step": "Verify filtered results",
-          "expectedResult": "Only transactions within specified date range are displayed, filter icon is filled, and active filter appears above table",
+          "expectedResult": "Only transactions between 2023-01-01 and 2023-01-15 are displayed",
           "testData": ""
         }
       ],
       "postconditions": "Transaction list shows filtered results by date range"
     },
     {
-      "id": "TC-INVHUB-11696-02",
+      "id": "TC-INVHUB-11697-02",
       "summary": "Filter transactions by Base Amount",
-      "preconditions": "User is on the transaction list page",
+      "preconditions": "User is on the Transaction List screen AND transaction list contains data",
       "steps": [
         {
           "step": "Click on Base Amount filter",
@@ -44,104 +49,111 @@
           "testData": ""
         },
         {
-          "step": "Enter the most frequent amount value",
+          "step": "Enter most frequent amount value",
           "expectedResult": "Amount value is accepted",
-          "testData": "1000.00"
+          "testData": "Most frequent amount from Base Amount column"
         },
         {
           "step": "Verify filtered results",
-          "expectedResult": "Only transactions with specified amount are displayed and filter icon is filled",
+          "expectedResult": "Only transactions with selected Base Amount are displayed",
+          "testData": ""
+        },
+        {
+          "step": "Check filter icon state",
+          "expectedResult": "Filter icon changes from hollow to filled",
           "testData": ""
         }
       ],
-      "postconditions": "Transaction list shows filtered results by amount"
+      "postconditions": "Transaction list shows filtered results by Base Amount"
     },
     {
-      "id": "TC-INVHUB-11696-03",
+      "id": "TC-INVHUB-11697-03",
       "summary": "Apply and clear multiple filters",
-      "preconditions": "User is on the transaction list page",
+      "preconditions": "User is on the Transaction List screen AND transaction list contains data",
       "steps": [
         {
-          "step": "Apply Transaction Type filter",
-          "expectedResult": "CASH transactions are filtered",
+          "step": "Select Transaction Type filter",
+          "expectedResult": "Transaction Type filter options are displayed",
+          "testData": ""
+        },
+        {
+          "step": "Select CASH from dropdown",
+          "expectedResult": "CASH is selected as filter value",
           "testData": "CASH"
         },
         {
-          "step": "Apply Account ID filter",
-          "expectedResult": "Account ID transactions are filtered",
+          "step": "Select Account ID filter",
+          "expectedResult": "Account ID filter options are displayed",
+          "testData": ""
+        },
+        {
+          "step": "Enter Account ID",
+          "expectedResult": "Account ID is accepted",
           "testData": "ACC123456"
         },
         {
-          "step": "Verify Clear All Filters option",
-          "expectedResult": "Clear All Filters option is visible",
+          "step": "Verify filter icons",
+          "expectedResult": "Both filter icons change from hollow to filled",
           "testData": ""
-        },
-        {
-          "step": "Click Clear All Filters",
-          "expectedResult": "All filter icons return to hollow state and no active filters appear",
-          "testData": ""
-        }
-      ],
-      "postconditions": "All filters are cleared and original transaction list is displayed"
-    },
-    {
-      "id": "TC-INVHUB-11696-04",
-      "summary": "Sort filtered results",
-      "preconditions": "Transaction list is filtered by DEBIT Transaction Type",
-      "steps": [
-        {
-          "step": "Click Account ID column header",
-          "expectedResult": "Filtered results are sorted by Account ID",
-          "testData": ""
-        },
-        {
-          "step": "Verify Transaction Type filter",
-          "expectedResult": "Transaction Type filter remains active",
-          "testData": "DEBIT"
-        }
-      ],
-      "postconditions": "Filtered results are sorted while maintaining filter"
-    },
-    {
-      "id": "TC-INVHUB-11696-05",
-      "summary": "Copilot interaction with filters",
-      "preconditions": "Transaction list is filtered by Base Amount",
-      "steps": [
-        {
-          "step": "Request ChatAI to show specific transactions",
-          "expectedResult": "Existing filters are cleared",
-          "testData": "Base Amount: 1000.00, Type: CASH"
-        },
-        {
-          "step": "Verify transaction list update",
-          "expectedResult": "Transaction list updates with Copilot results",
-          "testData": ""
-        }
-      ],
-      "postconditions": "Transaction list shows Copilot-filtered results"
-    },
-    {
-      "id": "TC-INVHUB-11696-06",
-      "summary": "Apply filter after Copilot interaction",
-      "preconditions": "Copilot has displayed transaction results",
-      "steps": [
-        {
-          "step": "Select Transaction Date filter",
-          "expectedResult": "Date filter options are displayed",
-          "testData": ""
-        },
-        {
-          "step": "Enter date range",
-          "expectedResult": "Date range is accepted",
-          "testData": "From: 2023-01-01, To: 2023-01-31"
         },
         {
           "step": "Verify filtered results",
-          "expectedResult": "Transaction list updates with date-filtered results from Copilot's list",
+          "expectedResult": "Only CASH transactions for ACC123456 are displayed",
+          "testData": ""
+        },
+        {
+          "step": "Click Clear All Filters button",
+          "expectedResult": "All filters are removed and complete transaction list is displayed",
           "testData": ""
         }
       ],
-      "postconditions": "Copilot results are filtered by date range"
+      "postconditions": "Transaction list returns to unfiltered state"
+    },
+    {
+      "id": "TC-INVHUB-11697-04",
+      "summary": "Sort filtered results by date",
+      "preconditions": "User is on the Transaction List screen AND transaction list contains data",
+      "steps": [
+        {
+          "step": "Apply Base Amount filter",
+          "expectedResult": "Base Amount filter is applied",
+          "testData": "Most frequent amount value"
+        },
+        {
+          "step": "Click Transaction Date column header",
+          "expectedResult": "Transactions remain filtered by Base Amount and are sorted by Transaction Date",
+          "testData": ""
+        }
+      ],
+      "postconditions": "Filtered transactions are sorted by date"
+    },
+    {
+      "id": "TC-INVHUB-11697-05",
+      "summary": "Filter after ChatAI interaction",
+      "preconditions": "User is on the Transaction List screen AND transaction list contains data",
+      "steps": [
+        {
+          "step": "Request ChatAI to show specific transactions",
+          "expectedResult": "ChatAI filters transactions by most frequent Base Amount and CASH type",
+          "testData": "Base Amount = most frequent value, Type = CASH"
+        },
+        {
+          "step": "Verify list refresh",
+          "expectedResult": "Transaction list refreshes with ChatAI filtered results",
+          "testData": ""
+        },
+        {
+          "step": "Apply date range filter",
+          "expectedResult": "Date filter options are displayed",
+          "testData": "From: 2023-01-01, To: 2023-01-15"
+        },
+        {
+          "step": "Verify final filtered results",
+          "expectedResult": "Only transactions within date range are displayed and filter icon changes from hollow to filled",
+          "testData": ""
+        }
+      ],
+      "postconditions": "Transaction list shows filtered results by date range after ChatAI interaction"
     }
   ]
 }
