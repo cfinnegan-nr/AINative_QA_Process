@@ -34,7 +34,7 @@ def filter_dict(d, whitelist):
 
     
     
-def retrieve_jira_ticket_from_server(jira_ticket, timeout=10):
+def retrieve_jira_ticket_from_server(jira_ticket, ticket_type, timeout=10):
     """
     Retrieve a JIRA ticket's details from the server using the JIRA REST API.
     """
@@ -50,13 +50,13 @@ def retrieve_jira_ticket_from_server(jira_ticket, timeout=10):
         try:
             # Comment out response print for now - C. Finnegan - Jan 24th 2025
             # print(response.text)
-            print("\nRetrieving JIRA ticket from server...")
+            print(f"\nRetrieving JIRA {ticket_type} ticket from server...")
             return response.json()
         except ValueError as e:
             logging.error(f"Error decoding JSON response: {e}")
             return None
     except requests.exceptions.RequestException as e:
-        logging.error(f"Error retrieving JIRA ticket: {e} {response.text}")
+        logging.error(f"Error retrieving JIRA {ticket_type} ticket: {e} {response.text}")
         return None
 
 
@@ -72,7 +72,7 @@ def add_label_to_jira_ticket(jira_ticket, label, timeout=10):
     }
     
     # Get current labels first to avoid duplicates
-    current_ticket = retrieve_jira_ticket_from_server(jira_ticket)
+    current_ticket = retrieve_jira_ticket_from_server(jira_ticket, "LABEL")
     print("\nStage 2b: Adding Label to JIRA ticket...")
     if current_ticket and 'fields' in current_ticket and 'labels' in current_ticket['fields']:
         current_labels = current_ticket['fields']['labels']
